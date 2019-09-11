@@ -8,4 +8,12 @@ With the instructions in the previous section we created and configured a new Az
 Azure Active Directory Pod Identity - Provides token-based access to the Azure Resource Manager (ARM) via user-assigned identity.
 
 Application Gateway Ingress Controller - This is the controller which monitors ingress-related events and actively keeps your Azure Application Gateway installation in sync with the changes within the AKS cluster.
-Application Gateway Ingress Controller - This is the controller which monitors ingress-related events and actively keeps your Azure Application Gateway installation in sync with the changes within the AKS cluster.
+
+Steps:
+
+To configure kubectl to connect to the deployed Azure Kubernetes Cluster, follow these instructions.
+
+Add aad pod identity service to the cluster using the following command. This service will be used by the ingress controller. You can refer aad-pod-identity for more information.
+
+RBAC disabled AKS cluster
+kubectl create -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment.yaml
