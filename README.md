@@ -11,7 +11,7 @@ Application Gateway Ingress Controller - This is the controller which monitors i
 
 Steps:
 
-To configure kubectl to connect to the deployed Azure Kubernetes Cluster, follow these instructions.
+Configure kubectl to connect to Azure Kubernetes Cluster.
 
 Add aad pod identity service to the cluster using the following command. This service will be used by the ingress controller. You can refer aad-pod-identity for more information.
 
