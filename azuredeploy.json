@@ -2,391 +2,663 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "managedClusters_aksb307_name": {
-            "defaultValue": "aksb307",
-            "type": "String"
+        "aksServicePrincipalAppId": {
+            "type": "string",
+            "metadata": {
+                "description": "Application ID/Client ID  of the service principal. Used by AKS to manage AKS related resources on Azure like vms, subnets."
+            }
         },
-        "virtualNetworks_virtualnetworkb307_name": {
-            "defaultValue": "virtualnetworkb307",
-            "type": "String"
+        "aksServicePrincipalClientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Secret of the service principal. Used by AKS to manage Azure."
+            }
         },
-        "publicIPAddresses_appgwpublicipb307_name": {
-            "defaultValue": "appgwpublicipb307",
-            "type": "String"
+        "aksServicePrincipalObjectId": {
+            "type": "string",
+            "metadata": {
+                "description": "Object ID of the service principal."
+            }
         },
-        "applicationGateways_applicationgatewayb307_name": {
-            "defaultValue": "applicationgatewayb307",
-            "type": "String"
+        "virtualNetworkAddressPrefix": {
+            "defaultValue": "10.0.0.0/8",
+            "type": "string",
+            "metadata": {
+                "description": "Containers DNS server IP address."
+            }
         },
-        "userAssignedIdentities_appgwContrIdentityb307_name": {
-            "defaultValue": "appgwContrIdentityb307",
-            "type": "String"
+        "aksSubnetAddressPrefix": {
+            "defaultValue": "10.0.0.0/16",
+            "type": "string",
+            "metadata": {
+                "description": "Containers DNS server IP address."
+            }
+        },
+        "applicationGatewaySubnetAddressPrefix": {
+            "defaultValue": "10.1.0.0/16",
+            "type": "string",
+            "metadata": {
+                "description": "Containers DNS server IP address."
+            }
+        },
+        "aksDnsPrefix": {
+            "defaultValue": "aks",
+            "type": "string",
+            "metadata": {
+                "description": "Optional DNS prefix to use with hosted Kubernetes API server FQDN."
+            }
+        },
+        "aksAgentOsDiskSizeGB": {
+            "defaultValue": 40,
+            "minValue": 30,
+            "maxValue": 1023,
+            "type": "int",
+            "metadata": {
+                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 30 to 1023."
+            }
+        },
+        "aksAgentCount": {
+            "defaultValue": 3,
+            "minValue": 1,
+            "maxValue": 50,
+            "type": "int",
+            "metadata": {
+                "description": "The number of agent nodes for the cluster."
+            }
+        },
+        "aksAgentVMSize": {
+            "defaultValue": "Standard_D3_v2",
+            "allowedValues": [
+                "Standard_A0",
+                "Standard_A1",
+                "Standard_A10",
+                "Standard_A11",
+                "Standard_A1_v2",
+                "Standard_A2",
+                "Standard_A2_v2",
+                "Standard_A2m_v2",
+                "Standard_A3",
+                "Standard_A4",
+                "Standard_A4_v2",
+                "Standard_A4m_v2",
+                "Standard_A5",
+                "Standard_A6",
+                "Standard_A7",
+                "Standard_A8",
+                "Standard_A8_v2",
+                "Standard_A8m_v2",
+                "Standard_A9",
+                "Standard_B1ms",
+                "Standard_B1s",
+                "Standard_B2ms",
+                "Standard_B2s",
+                "Standard_B4ms",
+                "Standard_B8ms",
+                "Standard_D1",
+                "Standard_D11",
+                "Standard_D11_v2",
+                "Standard_D11_v2_Promo",
+                "Standard_D12",
+                "Standard_D12_v2",
+                "Standard_D12_v2_Promo",
+                "Standard_D13",
+                "Standard_D13_v2",
+                "Standard_D13_v2_Promo",
+                "Standard_D14",
+                "Standard_D14_v2",
+                "Standard_D14_v2_Promo",
+                "Standard_D15_v2",
+                "Standard_D16_v3",
+                "Standard_D16s_v3",
+                "Standard_D1_v2",
+                "Standard_D2",
+                "Standard_D2_v2",
+                "Standard_D2_v2_Promo",
+                "Standard_D2_v3",
+                "Standard_D2s_v3",
+                "Standard_D3",
+                "Standard_D32_v3",
+                "Standard_D32s_v3",
+                "Standard_D3_v2",
+                "Standard_D3_v2_Promo",
+                "Standard_D4",
+                "Standard_D4_v2",
+                "Standard_D4_v2_Promo",
+                "Standard_D4_v3",
+                "Standard_D4s_v3",
+                "Standard_D5_v2",
+                "Standard_D5_v2_Promo",
+                "Standard_D64_v3",
+                "Standard_D64s_v3",
+                "Standard_D8_v3",
+                "Standard_D8s_v3",
+                "Standard_DS1",
+                "Standard_DS11",
+                "Standard_DS11-1_v2",
+                "Standard_DS11_v2",
+                "Standard_DS11_v2_Promo",
+                "Standard_DS12",
+                "Standard_DS12-1_v2",
+                "Standard_DS12-2_v2",
+                "Standard_DS12_v2",
+                "Standard_DS12_v2_Promo",
+                "Standard_DS13",
+                "Standard_DS13-2_v2",
+                "Standard_DS13-4_v2",
+                "Standard_DS13_v2",
+                "Standard_DS13_v2_Promo",
+                "Standard_DS14",
+                "Standard_DS14-4_v2",
+                "Standard_DS14-8_v2",
+                "Standard_DS14_v2",
+                "Standard_DS14_v2_Promo",
+                "Standard_DS15_v2",
+                "Standard_DS1_v2",
+                "Standard_DS2",
+                "Standard_DS2_v2",
+                "Standard_DS2_v2_Promo",
+                "Standard_DS3",
+                "Standard_DS3_v2",
+                "Standard_DS3_v2_Promo",
+                "Standard_DS4",
+                "Standard_DS4_v2",
+                "Standard_DS4_v2_Promo",
+                "Standard_DS5_v2",
+                "Standard_DS5_v2_Promo",
+                "Standard_E16-4s_v3",
+                "Standard_E16-8s_v3",
+                "Standard_E16_v3",
+                "Standard_E16s_v3",
+                "Standard_E2_v3",
+                "Standard_E2s_v3",
+                "Standard_E32-16s_v3",
+                "Standard_E32-8s_v3",
+                "Standard_E32_v3",
+                "Standard_E32s_v3",
+                "Standard_E4-2s_v3",
+                "Standard_E4_v3",
+                "Standard_E4s_v3",
+                "Standard_E64-16s_v3",
+                "Standard_E64-32s_v3",
+                "Standard_E64_v3",
+                "Standard_E64i_v3",
+                "Standard_E64is_v3",
+                "Standard_E64s_v3",
+                "Standard_E8-2s_v3",
+                "Standard_E8-4s_v3",
+                "Standard_E8_v3",
+                "Standard_E8s_v3",
+                "Standard_F1",
+                "Standard_F16",
+                "Standard_F16s",
+                "Standard_F16s_v2",
+                "Standard_F1s",
+                "Standard_F2",
+                "Standard_F2s",
+                "Standard_F2s_v2",
+                "Standard_F32s_v2",
+                "Standard_F4",
+                "Standard_F4s",
+                "Standard_F4s_v2",
+                "Standard_F64s_v2",
+                "Standard_F72s_v2",
+                "Standard_F8",
+                "Standard_F8s",
+                "Standard_F8s_v2",
+                "Standard_G1",
+                "Standard_G2",
+                "Standard_G3",
+                "Standard_G4",
+                "Standard_G5",
+                "Standard_GS1",
+                "Standard_GS2",
+                "Standard_GS3",
+                "Standard_GS4",
+                "Standard_GS4-4",
+                "Standard_GS4-8",
+                "Standard_GS5",
+                "Standard_GS5-16",
+                "Standard_GS5-8",
+                "Standard_H16",
+                "Standard_H16m",
+                "Standard_H16mr",
+                "Standard_H16r",
+                "Standard_H8",
+                "Standard_H8m",
+                "Standard_L16s",
+                "Standard_L16s_v2",
+                "Standard_L32s",
+                "Standard_L4s",
+                "Standard_L8s",
+                "Standard_L8s_v2",
+                "Standard_M128",
+                "Standard_M128-32ms",
+                "Standard_M128-64ms",
+                "Standard_M128m",
+                "Standard_M128ms",
+                "Standard_M128s",
+                "Standard_M16-4ms",
+                "Standard_M16-8ms",
+                "Standard_M16ms",
+                "Standard_M32-16ms",
+                "Standard_M32-8ms",
+                "Standard_M32ls",
+                "Standard_M32ms",
+                "Standard_M32ts",
+                "Standard_M64",
+                "Standard_M64-16ms",
+                "Standard_M64-32ms",
+                "Standard_M64ls",
+                "Standard_M64m",
+                "Standard_M64ms",
+                "Standard_M64s",
+                "Standard_M8-2ms",
+                "Standard_M8-4ms",
+                "Standard_M8ms",
+                "Standard_NC12",
+                "Standard_NC12s_v2",
+                "Standard_NC12s_v3",
+                "Standard_NC24",
+                "Standard_NC24r",
+                "Standard_NC24rs_v2",
+                "Standard_NC24rs_v3",
+                "Standard_NC24s_v2",
+                "Standard_NC24s_v3",
+                "Standard_NC6",
+                "Standard_NC6s_v2",
+                "Standard_NC6s_v3",
+                "Standard_ND12s",
+                "Standard_ND24rs",
+                "Standard_ND24s",
+                "Standard_ND6s",
+                "Standard_NV12",
+                "Standard_NV24",
+                "Standard_NV6"
+            ],
+            "type": "string",
+            "metadata": {
+                "description": "The size of the Virtual Machine."
+            }
+        },
+        "kubernetesVersion": {
+            "defaultValue": "1.12.7",
+            "type": "string",
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "aksServiceCIDR": {
+            "defaultValue": "10.2.0.0/16",
+            "type": "string",
+            "metadata": {
+                "description": "A CIDR notation IP range from which to assign service cluster IPs."
+            }
+        },
+        "aksDnsServiceIP": {
+            "defaultValue": "10.2.0.10",
+            "type": "string",
+            "metadata": {
+                "description": "Containers DNS server IP address."
+            }
+        },
+        "aksDockerBridgeCIDR": {
+            "defaultValue": "172.17.0.1/16",
+            "type": "string",
+            "metadata": {
+                "description": "A CIDR notation IP for Docker bridge."
+            }
+        },
+        "aksEnableRBAC": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable RBAC on the AKS cluster."
+            }
+        },
+        "applicationGatewaySku": {
+            "defaultValue": "WAF_v2",
+            "allowedValues": [
+                "Standard_v2",
+                "WAF_v2"
+            ],
+            "type": "string",
+            "metadata": {
+                "description": "The sku of the Application Gateway. Default: WAF_v2 (Detection mode). In order to further customize WAF, use azure portal or cli."
+            }
         }
     },
-    "variables": {},
+    "variables": {
+        "resgpguid": "[substring(replace(guid(resourceGroup().id), '-', ''), 0, 4)]",
+        "vnetName": "[concat('virtualnetwork' , variables('resgpguid'))]",
+        "applicationGatewayName": "[concat('applicationgateway' , variables('resgpguid'))]",
+        "identityName": "[concat('appgwContrIdentity' , variables('resgpguid'))]",
+        "applicationGatewayPublicIpName": "[concat('appgwpublicip' , variables('resgpguid'))]",
+        "kubernetesSubnetName": "kubesubnet",
+        "applicationGatewaySubnetName": "appgwsubnet",
+        "aksClusterName": "[concat('aks' , variables('resgpguid'))]",
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "kubernetesSubnetId": "[concat(variables('vnetID'),'/subnets/', variables('kubernetesSubnetName'))]",
+        "applicationGatewaySubnetId": "[concat(variables('vnetID'),'/subnets/', variables('applicationGatewaySubnetName'))]",
+        "applicationGatewayPublicIpId": "[resourceId('Microsoft.Network/publicIPAddresses',variables('applicationGatewayPublicIpName'))]",
+        "applicationGatewayId": "[resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName'))]",
+        "identityId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
+        "aksClusterId": "[resourceId('Microsoft.ContainerService/managedClusters', variables('aksClusterName'))]",
+        "networkContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+        "contributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "managedIdentityOperatorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+        "readerRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "webApplicationFirewallConfiguration": {
+            "enabled": "true",
+            "firewallMode": "Detection"
+        }
+    },
     "resources": [
         {
             "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-            "apiVersion": "2018-11-30",
-            "name": "[parameters('userAssignedIdentities_appgwContrIdentityb307_name')]",
-            "location": "southeastasia",
-            "properties": {
-                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-                "principalId": "884c16c4-eff9-4a6c-aa08-448c43d9e2bf",
-                "clientId": "ae5fffb3-619a-4130-8467-87d2e901351d"
-            }
-        },
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2019-06-01",
-            "name": "[parameters('publicIPAddresses_appgwpublicipb307_name')]",
-            "location": "southeastasia",
-            "sku": {
-                "name": "Standard",
-                "tier": "Regional"
-            },
-            "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "360d8574-d66e-4494-8a03-f9b474246e65",
-                "ipAddress": "40.65.174.93",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-            }
+            "name": "[variables('identityName')]",
+            "apiVersion": "2015-08-31-PREVIEW",
+            "location": "[resourceGroup().location]"
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2019-06-01",
-            "name": "[parameters('virtualNetworks_virtualnetworkb307_name')]",
-            "location": "southeastasia",
+            "name": "[variables('vnetName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
             "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "88a8e028-0d1a-4bcc-8e47-85faf435b11b",
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.0.0.0/8"
+                        "[parameters('virtualNetworkAddressPrefix')]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "kubesubnet",
-                        "etag": "W/\"4d628e85-d115-40ac-9b52-5b95922be6b9\"",
+                        "name": "[variables('kubernetesSubnetName')]",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "addressPrefix": "10.0.0.0/16",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
+                            "addressPrefix": "[parameters('aksSubnetAddressPrefix')]"
                         }
                     },
                     {
-                        "name": "appgwsubnet",
-                        "etag": "W/\"4d628e85-d115-40ac-9b52-5b95922be6b9\"",
+                        "name": "[variables('applicationGatewaySubnetName')]",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "addressPrefix": "10.1.0.0/16",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
+                            "addressPrefix": "[parameters('applicationGatewaySubnetAddressPrefix')]"
                         }
                     }
-                ],
-                "virtualNetworkPeerings": [],
-                "enableDdosProtection": false,
-                "enableVmProtection": false
+                ]
             }
         },
         {
-            "type": "Microsoft.ContainerService/managedClusters",
-            "apiVersion": "2019-06-01",
-            "name": "[parameters('managedClusters_aksb307_name')]",
-            "location": "southeastasia",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_virtualnetworkb307_name'), 'kubesubnet')]"
-            ],
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('applicationGatewayPublicIpName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
             "properties": {
-                "kubernetesVersion": "1.12.7",
-                "dnsPrefix": "aksdns",
-                "agentPoolProfiles": [
-                    {
-                        "name": "agentpool",
-                        "count": 3,
-                        "vmSize": "Standard_D3_v2",
-                        "osDiskSizeGB": 40,
-                        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_virtualnetworkb307_name'), 'kubesubnet')]",
-                        "maxPods": 30,
-                        "type": "AvailabilitySet",
-                        "orchestratorVersion": "1.12.7",
-                        "osType": "Linux"
-                    }
-                ],
-                "servicePrincipalProfile": {
-                    "clientId": "8348638c-801d-4fd8-bead-849e21229a8f"
-                },
-                "addonProfiles": {
-                    "httpApplicationRouting": {
-                        "enabled": false,
-                        "config": null
-                    },
-                    "omsagent": {
-                        "enabled": false,
-                        "config": null
-                    }
-                },
-                "nodeResourceGroup": "[concat('MC_rap-appgw-aks_', parameters('managedClusters_aksb307_name'), '_southeastasia')]",
-                "enableRBAC": true,
-                "networkProfile": {
-                    "networkPlugin": "azure",
-                    "loadBalancerSku": "Basic",
-                    "serviceCidr": "10.2.0.0/16",
-                    "dnsServiceIP": "10.2.0.10",
-                    "dockerBridgeCidr": "172.17.0.1/16"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('virtualNetworks_virtualnetworkb307_name'), '/appgwsubnet')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_virtualnetworkb307_name'))]"
-            ],
-            "properties": {
-                "provisioningState": "Succeeded",
-                "addressPrefix": "10.1.0.0/16",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('virtualNetworks_virtualnetworkb307_name'), '/kubesubnet')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_virtualnetworkb307_name'))]"
-            ],
-            "properties": {
-                "provisioningState": "Succeeded",
-                "addressPrefix": "10.0.0.0/16",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Enabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
+                "publicIPAllocationMethod": "Static"
             }
         },
         {
             "type": "Microsoft.Network/applicationGateways",
-            "apiVersion": "2019-06-01",
-            "name": "[parameters('applicationGateways_applicationgatewayb307_name')]",
-            "location": "southeastasia",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_virtualnetworkb307_name'), 'appgwsubnet')]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_appgwpublicipb307_name'))]"
-            ],
+            "name": "[variables('applicationGatewayName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
             "tags": {
-                "managed-by-k8s-ingress": "0.8.0/a7cf397/2019-08-20-07:07T+0000"
+                "managed-by-k8s-ingress": "true"
             },
             "properties": {
-                "provisioningState": "Succeeded",
-                "resourceGuid": "64ebffe2-22b8-4dcd-a42d-cd16d5b631c0",
                 "sku": {
-                    "name": "WAF_v2",
-                    "tier": "WAF_v2",
+                    "name": "[parameters('applicationGatewaySku')]",
+                    "tier": "[parameters('applicationGatewaySku')]",
                     "capacity": 2
                 },
                 "gatewayIPConfigurations": [
                     {
                         "name": "appGatewayIpConfig",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
                         "properties": {
-                            "provisioningState": "Succeeded",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_virtualnetworkb307_name'), 'appgwsubnet')]"
+                                "id": "[variables('applicationGatewaySubnetId')]"
                             }
-                        },
-                        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+                        }
                     }
                 ],
-                "sslCertificates": [],
-                "trustedRootCertificates": [],
                 "frontendIPConfigurations": [
                     {
                         "name": "appGatewayFrontendIP",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_appgwpublicipb307_name'))]"
+                            "PublicIPAddress": {
+                                "id": "[variables('applicationGatewayPublicIpId')]"
                             }
                         }
                     }
                 ],
                 "frontendPorts": [
                     {
-                        "name": "fp-80",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
+                        "name": "httpPort",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "port": 80
-                        },
-                        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+                            "Port": 80
+                        }
+                    },
+                    {
+                        "name": "httpsPort",
+                        "properties": {
+                            "Port": 443
+                        }
                     }
                 ],
                 "backendAddressPools": [
                     {
-                        "name": "defaultaddresspool",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
+                        "name": "bepool",
                         "properties": {
-                            "provisioningState": "Succeeded",
                             "backendAddresses": []
-                        },
-                        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
-                    },
-                    {
-                        "name": "pool-default-frontend-80-bp-80",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "backendAddresses": [
-                                {
-                                    "ipAddress": "10.0.0.28"
-                                },
-                                {
-                                    "ipAddress": "10.0.0.39"
-                                },
-                                {
-                                    "ipAddress": "10.0.0.67"
-                                }
-                            ]
-                        },
-                        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
-                    }
-                ],
-                "backendHttpSettingsCollection": [
-                    {
-                        "name": "bp-default-frontend-80-80-guestbook",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "port": 80,
-                            "protocol": "Http",
-                            "cookieBasedAffinity": "Disabled",
-                            "pickHostNameFromBackendAddress": false,
-                            "requestTimeout": 30,
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/probes/pb-default-frontend-80-guestbook')]"
-                            }
-                        },
-                        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
-                    },
-                    {
-                        "name": "defaulthttpsetting",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "port": 80,
-                            "protocol": "Http",
-                            "cookieBasedAffinity": "Disabled",
-                            "pickHostNameFromBackendAddress": false,
-                            "requestTimeout": 30,
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/probes/defaultprobe')]"
-                            }
-                        },
-                        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+                        }
                     }
                 ],
                 "httpListeners": [
                     {
-                        "name": "fl-80",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
+                        "name": "httpListener",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/frontendIPConfigurations/appGatewayFrontendIP')]"
-                            },
-                            "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/frontendPorts/fp-80')]"
-                            },
                             "protocol": "Http",
-                            "requireServerNameIndication": false
-                        },
-                        "type": "Microsoft.Network/applicationGateways/httpListeners"
+                            "frontendPort": {
+                                "id": "[concat(variables('applicationGatewayId'), '/frontendPorts/httpPort')]"
+                            },
+                            "frontendIPConfiguration": {
+                                "id": "[concat(variables('applicationGatewayId'), '/frontendIPConfigurations/appGatewayFrontendIP')]"
+                            }
+                        }
                     }
                 ],
-                "urlPathMaps": [],
+                "backendHttpSettingsCollection": [
+                    {
+                        "name": "setting",
+                        "properties": {
+                            "port": 80,
+                            "protocol": "Http"
+                        }
+                    }
+                ],
                 "requestRoutingRules": [
                     {
-                        "name": "rr-80",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
+                        "name": "rule1",
                         "properties": {
-                            "provisioningState": "Succeeded",
-                            "ruleType": "Basic",
                             "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/httpListeners/fl-80')]"
+                                "id": "[concat(variables('applicationGatewayId'), '/httpListeners/httpListener')]"
                             },
                             "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/backendAddressPools/pool-default-frontend-80-bp-80')]"
+                                "id": "[concat(variables('applicationGatewayId'), '/backendAddressPools/bepool')]"
                             },
                             "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGateways_applicationgatewayb307_name')), '/backendHttpSettingsCollection/bp-default-frontend-80-80-guestbook')]"
+                                "id": "[concat(variables('applicationGatewayId'), '/backendHttpSettingsCollection/setting')]"
+                            }
+                        }
+                    }
+                ],
+                "webApplicationFirewallConfiguration": "[if(equals(parameters('applicationGatewaySku'), 'WAF_v2'), variables('webApplicationFirewallConfiguration'), json('null'))]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('applicationGatewayPublicIpName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "RoleAssignmentDeploymentForKubenetesSp",
+            "apiVersion": "2017-05-10",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "resourceGroup": "[resourceGroup().name]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks/subnets/providers/roleAssignments",
+                            "apiVersion": "2017-05-01",
+                            "name": "[concat(variables('vnetName'), '/', variables('kubernetesSubnetName'),'/Microsoft.Authorization/', guid(resourceGroup().id, 'aksvnetaccess'))]",
+                            "properties": {
+                                "roleDefinitionId": "[variables('networkContributorRole')]",
+                                "principalId": "[parameters('aksServicePrincipalObjectId')]",
+                                "scope": "[variables('kubernetesSubnetId')]"
                             }
                         },
-                        "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
-                    }
-                ],
-                "probes": [
-                    {
-                        "name": "defaultprobe",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "protocol": "Http",
-                            "host": "localhost",
-                            "path": "/",
-                            "interval": 30,
-                            "timeout": 30,
-                            "unhealthyThreshold": 3,
-                            "pickHostNameFromBackendHttpSettings": false,
-                            "minServers": 0,
-                            "match": {}
-                        },
-                        "type": "Microsoft.Network/applicationGateways/probes"
-                    },
-                    {
-                        "name": "pb-default-frontend-80-guestbook",
-                        "etag": "W/\"2b09cf56-7ac7-47c9-89c6-32d01c814cb6\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "protocol": "Http",
-                            "host": "localhost",
-                            "path": "/",
-                            "interval": 30,
-                            "timeout": 30,
-                            "unhealthyThreshold": 3,
-                            "pickHostNameFromBackendHttpSettings": false,
-                            "minServers": 0,
-                            "match": {}
-                        },
-                        "type": "Microsoft.Network/applicationGateways/probes"
-                    }
-                ],
-                "rewriteRuleSets": [],
-                "redirectConfigurations": [],
-                "webApplicationFirewallConfiguration": {
-                    "enabled": true,
-                    "firewallMode": "Detection",
-                    "ruleSetType": "OWASP",
-                    "ruleSetVersion": "3.0",
-                    "disabledRuleGroups": [],
-                    "requestBodyCheck": true,
-                    "maxRequestBodySizeInKb": 128,
-                    "fileUploadLimitInMb": 100
+                        {
+                            "type": "Microsoft.ManagedIdentity/userAssignedIdentities/providers/roleAssignments",
+                            "apiVersion": "2017-05-01",
+                            "name": "[concat(variables('identityName'), '/Microsoft.Authorization/', guid(resourceGroup().id, 'aksidentityaccess'))]",
+                            "properties": {
+                                "roleDefinitionId": "[variables('managedIdentityOperatorRole')]",
+                                "principalId": "[parameters('aksServicePrincipalObjectId')]",
+                                "scope": "[variables('identityId')]",
+                                "principalType": "ServicePrincipal"
+                            }
+                        }
+                    ]
                 }
-            }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
+                "[concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('identityName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "RoleAssignmentDeploymentForUserAssignedIdentity",
+            "apiVersion": "2017-05-10",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "resourceGroup": "[resourceGroup().name]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/applicationgateways/providers/roleAssignments",
+                            "apiVersion": "2017-05-01",
+                            "name": "[concat(variables('applicationGatewayName'), '/Microsoft.Authorization/', guid(resourceGroup().id, 'identityappgwaccess'))]",
+                            "properties": {
+                                "roleDefinitionId": "[variables('contributorRole')]",
+                                "principalId": "[reference(variables('identityId'), '2015-08-31-PREVIEW').principalId]",
+                                "scope": "[variables('applicationGatewayId')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Authorization/roleAssignments",
+                            "apiVersion": "2017-05-01",
+                            "name": "[guid(resourceGroup().id, 'identityrgaccess')]",
+                            "properties": {
+                                "roleDefinitionId": "[variables('readerRole')]",
+                                "principalId": "[reference(variables('identityId'), '2015-08-31-PREVIEW').principalId]",
+                                "scope": "[resourceGroup().id]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/applicationgateways/', variables('applicationGatewayName'))]",
+                "[concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('identityName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ContainerService/managedClusters",
+            "name": "[variables('aksClusterName')]",
+            "apiVersion": "2018-03-31",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "enableRBAC": "[parameters('aksEnableRBAC')]",
+                "dnsPrefix": "[parameters('aksDnsPrefix')]",
+                "addonProfiles": {
+                    "httpApplicationRouting": {
+                        "enabled": false
+                    },
+                    "omsagent": {
+                        "enabled": false
+                    }
+                },
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": "[parameters('aksAgentOsDiskSizeGB')]",
+                        "count": "[parameters('aksAgentCount')]",
+                        "vmSize": "[parameters('aksAgentVMSize')]",
+                        "osType": "Linux",
+                        "storageProfile": "ManagedDisks",
+                        "vnetSubnetID": "[variables('kubernetesSubnetId')]",
+                        "dnsPrefix": "agents"
+                    }
+                ],
+                "servicePrincipalProfile": {
+                    "clientId": "[parameters('aksServicePrincipalAppId')]",
+                    "secret": "[parameters('aksServicePrincipalClientSecret')]"
+                },
+                "networkProfile": {
+                    "networkPlugin": "azure",
+                    "serviceCidr": "[parameters('aksServiceCIDR')]",
+                    "dnsServiceIP": "[parameters('aksDnsServiceIP')]",
+                    "dockerBridgeCidr": "[parameters('aksDockerBridgeCIDR')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
+                "[concat('Microsoft.Resources/deployments/', 'RoleAssignmentDeploymentForKubenetesSp')]"
+            ]
         }
-    ]
+    ],
+    "outputs": {
+        "subscriptionId": {
+            "type": "string",
+            "value": "[subscription().subscriptionId]"
+        },
+        "resourceGroupName": {
+            "type": "string",
+            "value": "[resourceGroup().name]"
+        },
+        "applicationGatewayName": {
+            "type": "string",
+            "value": "[variables('applicationGatewayName')]"
+        },
+        "identityResourceId": {
+            "type": "string",
+            "value": "[variables('identityId')]"
+        },
+        "identityClientId": {
+            "type": "string",
+            "value": "[reference(variables('identityID'), '2015-08-31-PREVIEW').clientId]"
+        },
+        "aksApiServerAddress": {
+            "type": "string",
+            "value": "[reference(variables('aksClusterId'), '2018-03-31').fqdn]"
+        },
+        "aksClusterName": {
+            "type": "string",
+            "value": "[variables('aksClusterName')]"
+        }
+    }
 }

@@ -1,21 +1,54 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "managedClusters_aksb307_name": {
-            "value": null
-        },
-        "virtualNetworks_virtualnetworkb307_name": {
-            "value": null
-        },
-        "publicIPAddresses_appgwpublicipb307_name": {
-            "value": null
-        },
-        "applicationGateways_applicationgatewayb307_name": {
-            "value": null
-        },
-        "userAssignedIdentities_appgwContrIdentityb307_name": {
-            "value": null
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "aksServicePrincipalAppId": {
+      "value": null
+    },
+    "aksServicePrincipalClientSecret": {
+      "value": null
+    },
+    "aksServicePrincipalObjectId": {
+      "value": null
+    },
+    "virtualNetworkAddressPrefix": {
+      "value": "10.0.0.0/8"
+    },
+    "aksSubnetAddressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "applicationGatewaySubnetAddressPrefix": {
+      "value": "10.1.0.0/16"
+    },
+    "aksDnsPrefix": {
+      "value": "aks"
+    },
+    "aksAgentOsDiskSizeGB": {
+      "value": 40
+    },
+    "aksAgentCount": {
+      "value": 3
+    },
+    "aksAgentVMSize": {
+      "value": "Standard_D3_v2"
+    },
+    "kubernetesVersion": {
+      "value": "1.12.7"
+    },
+    "aksServiceCIDR": {
+      "value": "10.2.0.0/16"
+    },
+    "aksDnsServiceIP": {
+      "value": "10.2.0.10"
+    },
+    "aksDockerBridgeCIDR": {
+      "value": "172.17.0.1/16"
+    },
+    "aksEnableRBAC": {
+      "value": null
+    },
+    "applicationGatewaySku": {
+      "value": "WAF_v2"
     }
+  }
 }
