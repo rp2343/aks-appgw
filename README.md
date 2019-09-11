@@ -1,6 +1,5 @@
 # Template for creating AKS cluster with App GW integration.
-<a href="https://azuredeploy.net/
-   repository=https://github.com/rp2343/aks-appgw"
-   target="_blank">
-   <img src="http://azuredeploy.net/deploybutton.png"/>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Frp2343%2Faks-appgw%2Fmaster%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
+
