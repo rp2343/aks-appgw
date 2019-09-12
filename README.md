@@ -24,50 +24,41 @@ helm init --tiller-namespace kube-system --service-account tiller-sa
 helm repo add application-gateway-kubernetes-ingress https://appgwingress.blob.core.windows.net/ingress-azure-helm-package/
 helm repo update
 
-4. Edit helm-config.yaml and fill in the values for appgw and armAuth
-
-# This file contains the essential configs for the ingress controller helm chart
-
-# Verbosity level of the App Gateway Ingress Controller
-verbosityLevel: 3
-
-################################################################################
-# Specify which application gateway the ingress controller will manage
-#
-appgw:
-    subscriptionId: <subscription-id>
-    resourceGroup: <resourcegroup-name>
-    name: <applicationgateway-name>
-
-################################################################################
-# Specify which kubernetes namespace the ingress controller will watch
-# Default value is "default"
-# Leaving this variable out or setting it to blank or empty string would
-# result in Ingress Controller observing all acessible namespaces.
-#
-# kubernetes:
-#   watchNamespace: <namespace>
-
-################################################################################
-# Specify the authentication with Azure Resource Manager
-#
-# Two authentication methods are available:
-# - Option 1: AAD-Pod-Identity (https://github.com/Azure/aad-pod-identity)
-armAuth:
-    type: aadPodIdentity
-    identityResourceID: <identity-resource-id>
-    identityClientID:  <identity-client-id>
-
-################################################################################
-# Specify if the cluster is RBAC enabled or not
-rbac:
-    enabled: false # true/false
-
-################################################################################
-# Specify aks cluster related information. THIS IS BEING DEPRECATED.
-aksClusterConfiguration:
-    apiServerAddress: <aks-api-server-address>
-    
+4. Edit helm-config.yaml and fill in the values for appgw and armAuth  
 NOTE: The <identity-resource-id> and <identity-client-id> are the properties of the Azure AD Identity you setup in the previous section. You can retrieve this information by running the following command:
 
 az identity show -g <resourcegroup> -n <identity-name>
+    
+5. Deploy guestbook application
+
+a. Download guestbook-all-in-one.yaml
+
+b. Deploy guestbook-all-in-one.yaml into your AKS cluster by running
+kubectl apply -f guestbook-all-in-one.yaml
+
+c. Expose service over HTTP :
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: guestbook
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: frontend
+          servicePort: 80
+          
+          
+This ingress will expose the frontend service of the guestbook-all-in-one deployment as a default backend of the Application Gateway.
+Save the above ingress resource as ing-guestbook.yaml.
+
+d. Deploy ing-guestbook.yaml by running:
+
+kubectl apply -f ing-guestbook.yaml
+
+Now the guestbook application should be available. You can check this by visiting the public address of the Application Gateway.
+
+
